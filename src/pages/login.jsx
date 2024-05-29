@@ -51,7 +51,7 @@ const Login = (props) => {
           } else if (res.data.token) {
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("user", JSON.stringify(res.data.user));
-            navigate("/stock");
+            navigate("/dashboard");
           }
         })
         .catch((err) => {

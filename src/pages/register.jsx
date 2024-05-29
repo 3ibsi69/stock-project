@@ -60,7 +60,7 @@ const Register = (props) => {
           if (res.data.token) {
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("user", JSON.stringify(res.data.user));
-            navigate("/stock");
+            navigate("/dashboard");
           } else {
             setError("Email already exists");
             toast.error("Email already exists");
