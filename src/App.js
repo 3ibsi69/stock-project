@@ -7,6 +7,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Login from "./pages/login";
 import Register from "./pages/register";
 import Dashboard from "./pages/dashboard";
+import Stock from "./pages/stock";
 
 const App = () => {
   const [theme, colorMode] = useMode();
@@ -27,6 +28,7 @@ const App = () => {
                 <Topbar />
                 <Routes>
                   <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/stock" element={<Stock />} />
                 </Routes>
               </main>
             </div>

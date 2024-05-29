@@ -26,9 +26,6 @@ const Topbar = () => {
         )}
       </Box>
       <Box display="flex">
-        <IconButton>
-          <PersonOutlinedIcon />
-        </IconButton>
         {broken && rtl && (
           <IconButton
             sx={{ margin: "0 6 0 2" }}

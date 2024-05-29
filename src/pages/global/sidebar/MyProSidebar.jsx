@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { tokens } from "../../../theme";
 import { useTheme, Box, Typography } from "@mui/material";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import SettingsIcon from "@mui/icons-material/Settings";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
@@ -231,6 +231,13 @@ const MyProSidebar = () => {
             >
               Account
             </Typography>
+            <Item
+              title="Settings"
+              to="/settings"
+              icon={<SettingsIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
             <Item
               title="Logout"
               to="/"
