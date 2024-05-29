@@ -8,6 +8,7 @@ import Login from "./pages/login";
 import Register from "./pages/register";
 import Dashboard from "./pages/dashboard";
 import Stock from "./pages/stock";
+import Facture from "./pages/facture";
 
 const App = () => {
   const [theme, colorMode] = useMode();
@@ -29,6 +30,7 @@ const App = () => {
                 <Routes>
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/stock" element={<Stock />} />
+                  <Route path="/facture" element={<Facture />} />
                 </Routes>
               </main>
             </div>

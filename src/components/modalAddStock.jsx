@@ -87,7 +87,7 @@ const ModalComp = ({ onResponseData }) => {
       ) {
         setLoading(true);
         axios
-          .post("http://localhost:3637/stock/create", {
+          .post(process.env.REACT_APP_API_BASE_URL + "/stock/create", {
             name: name,
             code: code,
             designation: designation,

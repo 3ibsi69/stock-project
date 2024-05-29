@@ -183,12 +183,13 @@ const MyProSidebar = () => {
               Data
             </Typography>
             <Item
-              title="Manage Team"
-              to="/team"
+              title="Manage Fournisseurs"
+              to="/fournisseur"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
+
             <Item
               title="Manage Stock"
               to="/stock"
@@ -196,6 +197,14 @@ const MyProSidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+            <Item
+              title="Print Facture"
+              to="/facture"
+              icon={<ReceiptOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
             <Typography
               variant="h6"
               color={colors.grey[300]}
