@@ -8,37 +8,37 @@ import { useNavigate } from "react-router-dom";
 
 import { Link } from "react-router-dom";
 import { tokens } from "../../../theme";
-import { useTheme, Box, Typography, IconButton } from "@mui/material";
+import { useTheme, Box, Typography } from "@mui/material";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
-
-import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
-import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-
+import Inventory2Icon from "@mui/icons-material/Inventory2";
+import ShowChartIcon from "@mui/icons-material/ShowChart";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
-import SwitchRightOutlinedIcon from "@mui/icons-material/SwitchRightOutlined";
-import SwitchLeftOutlinedIcon from "@mui/icons-material/SwitchLeftOutlined";
-const Item = ({ title, to, icon, selected, setSelected }) => {
+const Item = ({ title, to, icon, selected, setSelected, onClick }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  const handleClick = () => {
+    setSelected(title);
+    if (onClick) {
+      onClick();
+    }
+  };
 
   return (
     <MenuItem
       active={selected === title}
       style={{ color: colors.grey[100] }}
-      onClick={() => setSelected(title)}
+      onClick={handleClick}
       icon={icon}
-      routerLink={<Link to={to} />}
     >
-      <Typography>{title}</Typography>
+      <Link to={to} style={{ textDecoration: "none", color: "inherit" }}>
+        <Typography>{title}</Typography>
+      </Link>
     </MenuItem>
   );
 };
@@ -49,7 +49,7 @@ const MyProSidebar = () => {
   const colors = tokens(theme.palette.mode);
   const [selected, setSelected] = useState("Dashboard");
   const { sidebarImage } = useSidebarContext();
-  const { collapseSidebar, toggleSidebar, collapsed, broken } = useProSidebar();
+  const { collapseSidebar, collapsed } = useProSidebar();
   const [user, setUser] = useState({});
 
   useEffect(() => {
@@ -57,7 +57,6 @@ const MyProSidebar = () => {
       const user = await JSON.parse(localStorage.getItem("user"));
       if (user) {
         setUser(user);
-        console.log(user);
       } else {
         navigate("/");
       }
@@ -65,6 +64,9 @@ const MyProSidebar = () => {
     getUser();
   }, [navigate]);
 
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+  };
   return (
     <Box
       sx={{
@@ -153,7 +155,7 @@ const MyProSidebar = () => {
               </Box>
               <Box textAlign="center">
                 <Typography
-                  variant="h3"
+                  variant="h4"
                   color={colors.grey[100]}
                   fontWeight="bold"
                   sx={{ m: "10px 0 0 0" }}
@@ -166,8 +168,8 @@ const MyProSidebar = () => {
           <Box paddingLeft={collapsed ? undefined : "10%"}>
             <Item
               title="Dashboard"
-              to="/"
-              icon={<HomeOutlinedIcon />}
+              to="/dashboard"
+              icon={<ShowChartIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -187,20 +189,12 @@ const MyProSidebar = () => {
               setSelected={setSelected}
             />
             <Item
-              title="Contacts Information"
-              to="/contacts"
-              icon={<ContactsOutlinedIcon />}
+              title="Manage Stock"
+              to="/stock"
+              icon={<Inventory2Icon />}
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
-              title="Invoices Balances"
-              to="/invoices"
-              icon={<ReceiptOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -235,35 +229,15 @@ const MyProSidebar = () => {
               color={colors.grey[300]}
               sx={{ m: "15px 20px 5px 20px" }}
             >
-              Charts
+              Account
             </Typography>
             <Item
-              title="Bar Chart"
-              to="/bar"
-              icon={<BarChartOutlinedIcon />}
+              title="Logout"
+              to="/"
+              icon={<ReceiptOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
-            <Item
-              title="Pie Chart"
-              to="/pie"
-              icon={<PieChartOutlineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Line Chart"
-              to="/line"
-              icon={<TimelineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Geography Chart"
-              to="/geography"
-              icon={<MapOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
+              onClick={handleLogout}
             />
           </Box>
         </Menu>
