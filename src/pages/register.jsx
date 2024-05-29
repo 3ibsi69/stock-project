@@ -4,54 +4,66 @@ import axios from "axios";
 import logo from "../assets/4359230.jpg";
 import { toast } from "react-toastify";
 
-const Login = (props) => {
+const Register = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [phone, setPhone] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [username, setUsername] = useState("");
+  const [usernameError, setUsernameError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-    setEmailError("");
-  };
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-    setPasswordError("");
-  };
-  const handleShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
 
   const navigate = useNavigate();
 
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
   const onButtonClick = async (e) => {
     e.preventDefault();
-
     if (email === "") {
       setEmailError("Email is required");
     }
     if (password === "") {
       setPasswordError("Password is required");
     }
-    if (email !== "" && password !== "") {
+
+    if (
+      phone === "" ||
+      phone.trim() === "" ||
+      (phone && !/^\d+$/.test(phone))
+    ) {
+      setPhoneError("Phone number should in  digits");
+    }
+    if (username === "") {
+      setUsernameError("Username is required");
+    }
+
+    if (
+      email !== "" &&
+      password !== "" &&
+      username !== "" &&
+      phone !== "" &&
+      /^\d+$/.test(phone)
+    ) {
       await axios
-        .post(process.env.REACT_APP_API_BASE_URL + "/auth/user/signin", {
-          email: email,
-          password: password,
+        .post(process.env.REACT_APP_API_BASE_URL + "/auth/user/signup", {
+          email,
+          password,
+          phone,
+          username,
         })
         .then((res) => {
-          if (res.data.msg === "wrong Email") {
-            setEmailError("Wrong Email try again");
-            toast.error("Wrong Email try again");
-          } else if (res.data.msg === "wrong password") {
-            setPasswordError("Wrong Password try again");
-            toast.error(" Wrong Password try again");
-          } else if (res.data.token) {
+          if (res.data.token) {
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("user", JSON.stringify(res.data.user));
             navigate("/stock");
+          } else {
+            setError("Email already exists");
+            toast.error("Email already exists");
           }
         })
         .catch((err) => {
@@ -64,23 +76,48 @@ const Login = (props) => {
     <section className="bg-gray-50 min-h-screen flex items-center justify-center">
       <div className="bg-gray-100 flex rounded-2xl shadow-lg max-w-3xl p-5 items-center">
         <div className="md:w-1/2 px-8 md:px-16">
-          <h2 className="font-bold text-2xl text-[#002D74]">Login</h2>
-          <p className="text-xs mt-4 text-[#002D74]">
-            if you already a member easily login
-          </p>
+          <h2 className="font-bold text-2xl text-[#002D74]">Register</h2>
+
           <form className="flex flex-col gap-4">
             <input
               type="email"
               placeholder="Email"
-              onChange={handleEmailChange}
-              className={`p-2 mt-8 rounded-xl border text-sm
-               ${emailError ? "border-red-500" : ""}`}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setEmailError("");
+              }}
+              className={`p-2 mt-8 rounded-xl border text-sm ${
+                emailError ? "border-red-500" : ""
+              }`}
+            />
+            <input
+              type="text"
+              placeholder="Username"
+              onChange={(e) => {
+                setUsername(e.target.value);
+              }}
+              className={`p-2 rounded-xl border w-full text-sm ${
+                usernameError ? "border-red-500" : ""
+              }`}
+            />
+            <input
+              type="text"
+              placeholder="Phone"
+              onChange={(e) => {
+                setPhone(e.target.value);
+              }}
+              className={`p-2 rounded-xl border w-full text-sm ${
+                phoneError ? "border-red-500" : ""
+              }`}
             />
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
-                onChange={handlePasswordChange}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setPasswordError("");
+                }}
                 className={`p-2 rounded-xl border w-full text-sm ${
                   passwordError ? "border-red-500" : ""
                 }`}
@@ -100,21 +137,19 @@ const Login = (props) => {
             </div>
             <button
               onClick={(e) => onButtonClick(e)}
-              className="bg-[#002D74] rounded-xl text-white py-2 hover:scale-105 duration-300 "
-            >
-              Login
-            </button>
-          </form>
-          <div className="mt-5 text-xs border-b border-[#002D74] py-4 text-[#002D74]">
-            <a href="#">Forgot your password?</a>
-          </div>
-          <div className="mt-3 text-xs flex justify-between items-center text-[#002D74]">
-            <p>Don't have an account?</p>
-            <button
-              className="py-2 px-5 bg-white border rounded-xl hover:scale-110 duration-300"
-              onClick={() => navigate("/register")}
+              className="bg-[#002D74] rounded-xl text-white py-2 hover:scale-105 duration-300"
             >
               Register
+            </button>
+          </form>
+
+          <div className="mt-5 text-xs flex justify-between items-center text-[#002D74]">
+            <p>You already have an account?</p>
+            <button
+              className="py-2 px-5 bg-white border rounded-xl hover:scale-110 duration-300"
+              onClick={() => navigate("/")}
+            >
+              Login
             </button>
           </div>
         </div>
@@ -126,4 +161,4 @@ const Login = (props) => {
   );
 };
 
-export default Login;
+export default Register;
