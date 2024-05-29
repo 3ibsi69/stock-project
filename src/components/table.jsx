@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -9,16 +9,19 @@ import Paper from "@mui/material/Paper";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ModalCompEdit from "../components/modalEditStock";
 
-export default function BasicTable({ data }) {
+export default function BasicTable({ data, fetchStock }) {
+  const [editProduct, setEditProduct] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
   const columns = [
     "name",
     "Code",
     "Designation",
     "Category",
-    "Prix Achat HT",
-    "Prix Vente HT",
-    "Marge HT",
+    "PrixAchatHT",
+    "PrixVenteHT",
+    "MargeHT",
     "Quantité",
     "Action", // New action column
   ];
@@ -33,7 +36,14 @@ export default function BasicTable({ data }) {
     "Quantité",
     "Action", // New action header
   ];
-
+  const handleEdit = (row) => {
+    setEditProduct(row);
+    setModalVisible(true);
+  };
+  const handleCloseModal = () => {
+    setEditProduct(null);
+    setModalVisible(false);
+  };
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -54,7 +64,12 @@ export default function BasicTable({ data }) {
                 <TableCell key={colIndex}>
                   {column === "Action" ? (
                     <>
-                      <IconButton aria-label="edit">
+                      <IconButton
+                        aria-label="edit"
+                        onClick={() => {
+                          handleEdit(row);
+                        }}
+                      >
                         <EditIcon />
                       </IconButton>
                       <IconButton aria-label="delete">
@@ -70,6 +85,17 @@ export default function BasicTable({ data }) {
           ))}
         </TableBody>
       </Table>
+      {editProduct && (
+        <ModalCompEdit
+          product={editProduct}
+          onResponseData={() => {
+            fetchStock();
+          }}
+          open={modalVisible} // Pass modalVisible as the open prop
+          handleCancel={handleCloseModal}
+          setOpen={setModalVisible}
+        />
+      )}
     </TableContainer>
   );
 }

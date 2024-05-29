@@ -21,9 +21,11 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 const Item = ({ title, to, icon, selected, setSelected, onClick }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const navigate = useNavigate();
 
   const handleClick = () => {
     setSelected(title);
+    navigate(to);
     if (onClick) {
       onClick();
     }
@@ -36,9 +38,7 @@ const Item = ({ title, to, icon, selected, setSelected, onClick }) => {
       onClick={handleClick}
       icon={icon}
     >
-      <Link to={to} style={{ textDecoration: "none", color: "inherit" }}>
-        <Typography>{title}</Typography>
-      </Link>
+      <Typography>{title}</Typography>
     </MenuItem>
   );
 };
@@ -67,6 +67,7 @@ const MyProSidebar = () => {
   const handleLogout = () => {
     localStorage.removeItem("user");
   };
+
   return (
     <Box
       sx={{
@@ -252,5 +253,4 @@ const MyProSidebar = () => {
     </Box>
   );
 };
-
 export default MyProSidebar;

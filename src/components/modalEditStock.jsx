@@ -1,32 +1,46 @@
-import React, { useState } from "react";
-import { Button, Modal, Space } from "antd";
+import React, { useState, useEffect } from "react";
+import { Modal } from "antd";
 import axios from "axios";
-import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import TextField from "@mui/material/TextField";
+import { toast } from "react-toastify";
 
-const ModalComp = ({ onResponseData }) => {
-  const [open, setOpen] = useState(false);
-  const [name, setName] = useState("");
+const ModalCompEdit = ({
+  product,
+  onResponseData,
+  open,
+  handleCancel,
+  setOpen,
+}) => {
+  const [name, setName] = useState(product.name || "");
   const [nameError, setNameError] = useState(false);
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState(product.code || "");
   const [codeError, setCodeError] = useState(false);
-  const [designation, setDesignation] = useState("");
+  const [designation, setDesignation] = useState(product.designation || "");
   const [designationError, setDesignationError] = useState(false);
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(product.category || "");
   const [categoryError, setCategoryError] = useState(false);
-  const [prixAchatHt, setPrixAchatHt] = useState("");
+  const [prixAchatHt, setPrixAchatHt] = useState(product.prixAchatHT || "");
   const [prixAchatHtError, setPrixAchatHtError] = useState(false);
-  const [prixVenteHt, setPrixVenteHt] = useState("");
+  const [prixVenteHt, setPrixVenteHt] = useState(product.prixVenteHT || "");
   const [prixVenteHtError, setPrixVenteHtError] = useState(false);
-  const [margeHt, setMargeHt] = useState("");
+  const [margeHt, setMargeHt] = useState(product.MargeHT || "");
   const [margeHtError, setMargeHtError] = useState(false);
-  const [quantity, setQuantity] = useState("");
+  const [quantity, setQuantity] = useState(product.quantite || "");
   const [quantityError, setQuantityError] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const showModal = () => {
-    setOpen(true);
-  };
+  useEffect(() => {
+    if (product) {
+      setName(product.name || "");
+      setCode(product.Code || "");
+      setDesignation(product.Designation || "");
+      setCategory(product.Category || "");
+      setPrixAchatHt(product.PrixAchatHT || "");
+      setPrixVenteHt(product.PrixVenteHT || "");
+      setMargeHt(product.MargeHT || "");
+      setQuantity(product.Quantité || "");
+    }
+  }, [product]);
   const handleOk = () => {
     try {
       if (name === "") {
@@ -56,19 +70,15 @@ const ModalComp = ({ onResponseData }) => {
 
       if (prixAchatHt !== "" && !/^\d+$/.test(prixAchatHt)) {
         setPrixAchatHtError(true);
-        toast.error("Price must be a number");
       }
       if (prixVenteHt !== "" && !/^\d+$/.test(prixVenteHt)) {
         setPrixVenteHtError(true);
-        toast.error("Price must be a number");
       }
       if (quantity !== "" && !/^\d+$/.test(quantity)) {
         setQuantityError(true);
-        toast.error("Quantity must be a number");
       }
       if (margeHt !== "" && !/^\d+$/.test(margeHt)) {
         setMargeHtError(true);
-        toast.error("Marge must be a number");
       }
 
       if (
@@ -87,39 +97,36 @@ const ModalComp = ({ onResponseData }) => {
       ) {
         setLoading(true);
         axios
-          .post("http://localhost:3637/stock/create", {
-            name: name,
-            code: code,
-            designation: designation,
-            category: category,
-            prixAchatHT: prixAchatHt,
-            prixVenteHT: prixVenteHt,
-            MargeHT: margeHt,
-            quantite: quantity,
-          })
-          .then((res) => {
-            if (res.data.message === "Code already exist") {
-              setLoading(false);
-              setCodeError(true);
-              toast.error("Code already exist");
-              return;
+          .put(
+            process.env.REACT_APP_API_BASE_URL + `/stock/update/${product.id}`,
+            {
+              name: name,
+              code: code,
+              designation: designation,
+              category: category,
+              prixAchatHT: prixAchatHt,
+              prixVenteHT: prixVenteHt,
+              MargeHT: margeHt,
+              quantite: quantity,
             }
+          )
+          .then((res) => {
             setLoading(false);
             onResponseData(res.data);
             setOpen(false);
-            setName("");
-            setCategory("");
-            setPrixAchatHt("");
-            setPrixVenteHt("");
-            setQuantity("");
-            setCode("");
-            setMargeHt("");
-            setDesignation("");
-            toast.success("Stock added successfully");
+            setName(res.data.name);
+            setCode(res.data.code);
+            setDesignation(res.data.designation);
+            setCategory(res.data.category);
+            setPrixAchatHt(res.data.prixAchatHt);
+            setPrixVenteHt(res.data.prixVenteHt);
+            setQuantity(res.data.quantity);
+            setMargeHt(res.data.margeHt);
+            toast.success("Product updated successfully");
           })
           .catch((err) => {
-            console.log(err);
             setLoading(false);
+            console.log(err);
           });
       }
     } catch (err) {
@@ -127,22 +134,14 @@ const ModalComp = ({ onResponseData }) => {
     }
   };
 
-  const handleCancel = () => {
-    setOpen(false);
-  };
   return (
     <>
-      <Space>
-        <Button type="primary" onClick={showModal}>
-          Add Stock
-        </Button>
-      </Space>
       <Modal
-        open={open}
-        title="Create a new stock"
+        visible={open}
+        title="Edit Product"
         onOk={handleOk}
-        okText="Save"
-        loading={loading}
+        okText="Edit"
+        confirmLoading={loading}
         onCancel={handleCancel}
       >
         <div className="mb-4">
@@ -263,4 +262,4 @@ const ModalComp = ({ onResponseData }) => {
   );
 };
 
-export default ModalComp;
+export default ModalCompEdit;

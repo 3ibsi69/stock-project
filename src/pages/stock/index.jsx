@@ -17,13 +17,14 @@ const Stock = () => {
       );
       setStockData(
         res.data.map((item) => ({
+          id: item._id,
           name: item.name,
           Code: item.code,
           Designation: item.designation,
           Category: item.category,
-          "Prix Achat HT": item.prixAchatHT,
-          "Prix Vente HT": item.prixVenteHT,
-          "Marge HT": item.MargeHT,
+          PrixAchatHT: item.prixAchatHT,
+          PrixVenteHT: item.prixVenteHT,
+          MargeHT: item.MargeHT,
           Quantité: item.quantite,
         }))
       );
@@ -36,9 +37,12 @@ const Stock = () => {
   }, [responseData]);
   return (
     <div className="w-full h-full  p-4">
-      <ModalComp onResponseData={handleResponseData} />
-
-      <Table data={stockData} />
+      <div className="w-full h-full  p-4">
+        <Table data={stockData} fetchStock={fetchStock} />
+      </div>
+      <div className="absolute top-5 right-10">
+        <ModalComp onResponseData={handleResponseData} />
+      </div>
     </div>
   );
 };
