@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import logo from "../assets/4359230.jpg";
 import { toast } from "react-toastify";
@@ -13,11 +12,8 @@ const Register = (props) => {
   const [phoneError, setPhoneError] = useState("");
   const [username, setUsername] = useState("");
   const [usernameError, setUsernameError] = useState("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
-  const navigate = useNavigate();
 
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -58,9 +54,7 @@ const Register = (props) => {
         })
         .then((res) => {
           if (res.data.token) {
-            localStorage.setItem("token", res.data.token);
-            localStorage.setItem("user", JSON.stringify(res.data.user));
-            navigate("/dashboard");
+            toast.success("Admin registered successfully");
           } else {
             setError("Email already exists");
             toast.error("Email already exists");
@@ -74,11 +68,10 @@ const Register = (props) => {
 
   return (
     <section className="bg-gray-50 min-h-screen flex items-center justify-center">
-      <div className="bg-gray-100 flex rounded-2xl shadow-lg max-w-3xl p-5 items-center">
-        <div className="md:w-1/2 px-8 md:px-16">
-          <h2 className="font-bold text-2xl text-[#002D74]">Register</h2>
-
-          <form className="flex flex-col gap-4">
+      <div className="bg-gray-100 flex rounded-2xl shadow-lg max-w-5xl p-10 items-center">
+        <div className="md:w-1/2 px-12 md:px-20">
+          <h2 className="font-bold text-3xl text-[#002D74]">Register</h2>
+          <form className="flex flex-col gap-6">
             <input
               type="email"
               placeholder="Email"
@@ -86,7 +79,7 @@ const Register = (props) => {
                 setEmail(e.target.value);
                 setEmailError("");
               }}
-              className={`p-2 mt-8 rounded-xl border text-sm ${
+              className={`p-3 mt-10 rounded-xl border text-base ${
                 emailError ? "border-red-500" : ""
               }`}
             />
@@ -96,7 +89,7 @@ const Register = (props) => {
               onChange={(e) => {
                 setUsername(e.target.value);
               }}
-              className={`p-2 rounded-xl border w-full text-sm ${
+              className={`p-3 rounded-xl border w-full text-base ${
                 usernameError ? "border-red-500" : ""
               }`}
             />
@@ -106,7 +99,7 @@ const Register = (props) => {
               onChange={(e) => {
                 setPhone(e.target.value);
               }}
-              className={`p-2 rounded-xl border w-full text-sm ${
+              className={`p-3 rounded-xl border w-full text-base ${
                 phoneError ? "border-red-500" : ""
               }`}
             />
@@ -118,16 +111,16 @@ const Register = (props) => {
                   setPassword(e.target.value);
                   setPasswordError("");
                 }}
-                className={`p-2 rounded-xl border w-full text-sm ${
+                className={`p-3 rounded-xl border w-full text-base ${
                   passwordError ? "border-red-500" : ""
                 }`}
               />
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
+                width="20"
+                height="20"
                 fill="gray"
-                className="bi bi-eye absolute top-1/2 right-3 -translate-y-1/2"
+                className="bi bi-eye absolute top-1/2 right-4 -translate-y-1/2"
                 viewBox="0 0 16 16"
                 onClick={handleShowPassword}
               >
@@ -137,21 +130,11 @@ const Register = (props) => {
             </div>
             <button
               onClick={(e) => onButtonClick(e)}
-              className="bg-[#002D74] rounded-xl text-white py-2 hover:scale-105 duration-300"
+              className="bg-[#002D74] rounded-xl text-white py-3 hover:scale-105 duration-300"
             >
               Register
             </button>
           </form>
-
-          <div className="mt-5 text-xs flex justify-between items-center text-[#002D74]">
-            <p>You already have an account?</p>
-            <button
-              className="py-2 px-5 bg-white border rounded-xl hover:scale-110 duration-300"
-              onClick={() => navigate("/")}
-            >
-              Login
-            </button>
-          </div>
         </div>
         <div className="md:block hidden w-1/2">
           <img src={logo} alt="logo" className="rounded-2xl" />

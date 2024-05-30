@@ -10,6 +10,8 @@ import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ModalCompEdit from "../components/modalEditStock";
+import { message, Popconfirm } from "antd";
+import axios from "axios";
 
 export default function BasicTable({ data, fetchStock }) {
   const [editProduct, setEditProduct] = useState(null);
@@ -44,6 +46,23 @@ export default function BasicTable({ data, fetchStock }) {
     setEditProduct(null);
     setModalVisible(false);
   };
+  const confirm = (row) => {
+    try {
+      axios
+        .delete(process.env.REACT_APP_API_BASE_URL + `/stock/delete/${row.id}`)
+        .then(() => {
+          message.success("Product deleted successfully");
+          fetchStock();
+        })
+        .catch((error) => {
+          message.error("Failed to delete product");
+          console.error(error);
+        });
+    } catch {
+      message.error("Failed to delete product");
+    }
+  };
+  const cancel = (e) => {};
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -58,7 +77,11 @@ export default function BasicTable({ data, fetchStock }) {
           {data.map((row, rowIndex) => (
             <TableRow
               key={rowIndex}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              sx={{
+                "&:last-child td, &:last-child th": { border: 0 },
+                backgroundColor: row.Quantité <= 10 ? "#ff5252" : "inherit",
+                color: row.Quantité <= 10 ? "white" : "inherit",
+              }}
             >
               {columns.map((column, colIndex) => (
                 <TableCell key={colIndex}>
@@ -73,7 +96,16 @@ export default function BasicTable({ data, fetchStock }) {
                         <EditIcon />
                       </IconButton>
                       <IconButton aria-label="delete">
-                        <DeleteIcon />
+                        <Popconfirm
+                          title="Delete the product?"
+                          description="Are you sure to delete this product?"
+                          onConfirm={() => confirm(row)}
+                          onCancel={cancel}
+                          okText="Yes"
+                          cancelText="No"
+                        >
+                          <DeleteIcon />
+                        </Popconfirm>
                       </IconButton>
                     </>
                   ) : (

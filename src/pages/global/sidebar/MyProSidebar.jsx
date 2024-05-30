@@ -197,9 +197,30 @@ const MyProSidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+            <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              sx={{ m: "15px 20px 5px 20px" }}
+            >
+              Print Documents
+            </Typography>
             <Item
-              title="Print Facture"
+              title="Facture"
               to="/facture"
+              icon={<ReceiptOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Bon de Livraison"
+              to="/bon"
+              icon={<ReceiptOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Devis"
+              to="/devis"
               icon={<ReceiptOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -210,39 +231,18 @@ const MyProSidebar = () => {
               color={colors.grey[300]}
               sx={{ m: "15px 20px 5px 20px" }}
             >
-              Pages
+              Settings
             </Typography>
             <Item
-              title="Profile Form"
-              to="/form"
+              title="Create Admin"
+              to="/register"
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
-              title="Calendar"
-              to="/calendar"
-              icon={<CalendarTodayOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="FAQ Page"
-              to="/faq"
-              icon={<HelpOutlineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
 
-            <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 20px 5px 20px" }}
-            >
-              Account
-            </Typography>
             <Item
-              title="Settings"
+              title="Account Settings"
               to="/settings"
               icon={<SettingsIcon />}
               selected={selected}

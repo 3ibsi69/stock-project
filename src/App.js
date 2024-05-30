@@ -9,14 +9,15 @@ import Register from "./pages/register";
 import Dashboard from "./pages/dashboard";
 import Stock from "./pages/stock";
 import Facture from "./pages/facture";
+import BonDeLivraison from "./pages/bon";
+import Devis from "./pages/devis";
+import Settings from "./pages/settings";
 
 const App = () => {
   const [theme, colorMode] = useMode();
   const location = useLocation();
 
-  const shouldShowSidebarAndTopbar = !["/", "/register"].includes(
-    location.pathname
-  );
+  const shouldShowSidebarAndTopbar = !["/"].includes(location.pathname);
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -31,6 +32,10 @@ const App = () => {
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/stock" element={<Stock />} />
                   <Route path="/facture" element={<Facture />} />
+                  <Route path="/bon" element={<BonDeLivraison />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/devis" element={<Devis />} />
+                  <Route path="/settings" element={<Settings />} />
                 </Routes>
               </main>
             </div>
@@ -41,7 +46,6 @@ const App = () => {
               {shouldShowSidebarAndTopbar && <Topbar />}
               <Routes>
                 <Route path="/" element={<Login />} />
-                <Route path="/register" element={<Register />} />
               </Routes>
             </main>
           </div>

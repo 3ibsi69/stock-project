@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./style.css";
 
-const Facture = () => {
+const Devis = () => {
   const [toUser, setToUser] = useState("");
   const [toUserError, setToUserError] = useState("");
   const [fromUser, setFromUser] = useState("");
@@ -44,12 +44,12 @@ const Facture = () => {
   const getFacture = async (id) => {
     try {
       const response = await axios.get(
-        process.env.REACT_APP_API_BASE_URL + `/facture/get/${id}`
+        process.env.REACT_APP_API_BASE_URL + `/devis/get/${id}`
       );
       const factureData = response.data;
 
       const pdfResponse = await axios.post(
-        process.env.REACT_APP_API_BASE_URL + "/pdf/get",
+        process.env.REACT_APP_API_BASE_URL + "/pdf/get/devis",
         {
           content: [
             {
@@ -72,7 +72,7 @@ const Facture = () => {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "facture.pdf");
+      link.setAttribute("download", "Devis.pdf");
 
       document.body.appendChild(link);
       link.click();
@@ -119,34 +119,31 @@ const Facture = () => {
       }
 
       setLoading(true);
-      const response = await axios.post(
-        "http://localhost:3637/facture/create",
-        {
-          to: toUser,
-          from: fromUser,
-          PaimentMethod: paymentMethod,
-          Remise: Remise,
-          giveRemise: giveRemise,
-          timbreFiscal: timbreF,
-          products: selectedProducts.map((product) => ({
-            _id: product.value,
-            code: product.code,
-            designation: product.designation,
-            category: product.category,
-            prixAchatHT: product.prixAchatHT,
-            prixVenteHT: product.prixVenteHT,
-            MargeHT: product.MargeHT,
-            quantite: productQuantities[product.value],
-          })),
-        }
-      );
+      const response = await axios.post("http://localhost:3637/devis/create", {
+        to: toUser,
+        from: fromUser,
+        PaimentMethod: paymentMethod,
+        Remise: Remise,
+        giveRemise: giveRemise,
+        timbreFiscal: timbreF,
+        products: selectedProducts.map((product) => ({
+          _id: product.value,
+          code: product.code,
+          designation: product.designation,
+          category: product.category,
+          prixAchatHT: product.prixAchatHT,
+          prixVenteHT: product.prixVenteHT,
+          MargeHT: product.MargeHT,
+          quantite: productQuantities[product.value],
+        })),
+      });
       if (response.data.msg === "Out of stock") {
         toast.error("Out of stock");
         setLoading(false);
 
         return;
       } else {
-        toast.success("Facture created successfully");
+        toast.success("Bon De Livraison created successfully");
         setToUser("");
         setFromUser("");
         setSelectedProducts([]);
@@ -203,7 +200,7 @@ const Facture = () => {
       <div className="bg-gray-100 flex rounded-2xl shadow-lg w-full max-w-2xl p-10 items-center">
         <div className="w-full px-8 md:px-16">
           <h2 className="font-bold text-2xl text-[#002D74] text-center mb-5">
-            Facture
+            Devis
           </h2>
 
           <form className="flex flex-col gap-4 w-full">
@@ -333,7 +330,7 @@ const Facture = () => {
               onClick={(e) => onButtonClick(e)}
               className="bg-[#002D74] rounded-xl text-white py-3 hover:bg-[#001F56] transition-transform transform hover:scale-105 duration-300 w-full"
             >
-              Download Facture
+              Download Devis
             </button>
           </form>
         </div>
@@ -342,4 +339,4 @@ const Facture = () => {
   );
 };
 
-export default Facture;
+export default Devis;
