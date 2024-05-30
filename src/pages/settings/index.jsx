@@ -75,7 +75,6 @@ const Settings = () => {
             phone,
           }
         );
-        console.log(res.data.getUpdatedUser);
         fetchUserDetails();
         toast.success("User details updated successfully!", {
           position: "top-right",

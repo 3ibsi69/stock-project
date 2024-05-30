@@ -11,6 +11,7 @@ import Stock from "./pages/stock";
 import Facture from "./pages/facture";
 import BonDeLivraison from "./pages/bon";
 import Devis from "./pages/devis";
+import Fournisseur from "./pages/fournisseur";
 import Settings from "./pages/settings";
 
 const App = () => {
@@ -33,6 +34,7 @@ const App = () => {
                   <Route path="/stock" element={<Stock />} />
                   <Route path="/facture" element={<Facture />} />
                   <Route path="/bon" element={<BonDeLivraison />} />
+                  <Route path="/fournisseur" element={<Fournisseur />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/devis" element={<Devis />} />
                   <Route path="/settings" element={<Settings />} />
