@@ -83,7 +83,7 @@ const Dashboard = () => {
             <StatBox
               title="32,441"
               subtitle="New Clients"
-              progress="0.30"
+              progress="0.05"
               increase="+5%"
               icon={
                 <PersonAddIcon
@@ -102,10 +102,10 @@ const Dashboard = () => {
             justifyContent="center"
           >
             <StatBox
-              title="1,325,134"
-              subtitle="Traffic Received"
-              progress="0.80"
-              increase="+43%"
+              title="829"
+              subtitle="Printed Papers"
+              progress="0.50"
+              increase="+50%"
               icon={
                 <TrafficIcon
                   sx={{ color: colors.greenAccent[600], fontSize: "26px" }}

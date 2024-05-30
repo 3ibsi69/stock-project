@@ -178,15 +178,19 @@ const Facture = () => {
       [productId]: quantity,
     }));
   };
-
   const searchProduct = (inputValue) => {
     axios
       .post("http://localhost:3637/stock/search", {
         search: inputValue.target.value,
       })
       .then((res) => {
+        const filteredOptions = res.data.filter(
+          (item) =>
+            !selectedProducts.find((selected) => selected.value === item._id)
+        );
+
         setOptions(
-          res.data.map((item) => ({
+          filteredOptions.map((item) => ({
             value: item._id,
             label: item.name,
             code: item.code,
@@ -204,6 +208,7 @@ const Facture = () => {
         console.log(err);
       });
   };
+
   const handleOptionSelect = (option) => {
     setSelectedProducts([...selectedProducts, option]);
     setShowOptions(false);

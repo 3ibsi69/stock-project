@@ -184,8 +184,13 @@ const Devis = () => {
         search: inputValue.target.value,
       })
       .then((res) => {
+        const filteredOptions = res.data.filter(
+          (item) =>
+            !selectedProducts.find((selected) => selected.value === item._id)
+        );
+
         setOptions(
-          res.data.map((item) => ({
+          filteredOptions.map((item) => ({
             value: item._id,
             label: item.name,
             code: item.code,

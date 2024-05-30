@@ -202,7 +202,7 @@ const MyProSidebar = () => {
               color={colors.grey[300]}
               sx={{ m: "15px 20px 5px 20px" }}
             >
-              Print Documents
+              Print
             </Typography>
             <Item
               title="Facture"
