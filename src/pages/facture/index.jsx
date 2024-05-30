@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./style.css";
+import { Modal } from "antd";
 
 const Facture = () => {
   const [toUser, setToUser] = useState("");
@@ -34,6 +35,42 @@ const Facture = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [productQuantities, setProductQuantities] = useState({});
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = (e) => {
+    e.preventDefault();
+    if (toUser === "") {
+      setToUserError("To User is required");
+      toast.error("User is required");
+      return;
+    }
+    if (fromUser === "") {
+      setFromUserError("From User is required");
+      toast.error("From User is required");
+      return;
+    }
+    if (selectedProducts.length === 0) {
+      toast.error("Please select at least one product");
+
+      return;
+    }
+
+    if (paymentMethod === "") {
+      setPaymentMethodError("Payment Method is required");
+      toast.error("Payment Method is required");
+      return;
+    }
+    if (giveRemise && Remise === "") {
+      setRemiseError("Remise is required");
+      toast.error("Remise is required");
+      return;
+    }
+
+    setIsModalOpen(true);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   useEffect(() => {
     const User = JSON.parse(localStorage.getItem("user"));
     if (!User) {
@@ -87,37 +124,10 @@ const Facture = () => {
   const onButtonClick = async (e) => {
     e.preventDefault();
     try {
-      if (toUser === "") {
-        setToUserError("To User is required");
-        toast.error("User is required");
-        return;
-      }
-      if (fromUser === "") {
-        setFromUserError("From User is required");
-        toast.error("From User is required");
-        return;
-      }
-      if (selectedProducts.length === 0) {
-        toast.error("Please select at least one product");
-
-        return;
-      }
       if (Object.keys(productQuantities).length === 0) {
         toast.error("Please enter quantity for selected products");
-
         return;
       }
-      if (paymentMethod === "") {
-        setPaymentMethodError("Payment Method is required");
-        toast.error("Payment Method is required");
-        return;
-      }
-      if (giveRemise && Remise === "") {
-        setRemiseError("Remise is required");
-        toast.error("Remise is required");
-        return;
-      }
-
       setLoading(true);
       const response = await axios.post(
         "http://localhost:3637/facture/create",
@@ -152,9 +162,10 @@ const Facture = () => {
         setSelectedProducts([]);
         setProductQuantities({});
         setLoading(false);
-        getFacture(response.data._id);
         setPaymentMethod("");
         setRemise("");
+        setIsModalOpen(false);
+        getFacture(response.data._id);
       }
     } catch (error) {
       console.log(error);
@@ -210,6 +221,7 @@ const Facture = () => {
             <input
               type="text"
               placeholder="User"
+              value={toUser}
               onChange={(e) => {
                 setToUser(e.target.value);
                 setToUserError("");
@@ -221,6 +233,7 @@ const Facture = () => {
             <input
               type="text"
               placeholder="From User"
+              value={fromUser}
               onChange={(e) => {
                 setFromUser(e.target.value);
                 setFromUserError("");
@@ -293,51 +306,54 @@ const Facture = () => {
               />
               <label>Timbre Fiscale</label>
             </div>
-            {selectedProducts.length > 0 &&
-              selectedProducts.map((product, index) => (
-                <div className="row-input-q w-full" key={index}>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <div
-                      className="delete"
-                      onClick={() =>
-                        setSelectedProducts([
-                          ...selectedProducts.filter(
-                            (item) => item.value !== product.value
-                          ),
-                        ])
-                      }
-                      style={{
-                        cursor: "pointer",
-                        marginRight: "5px",
-                        color: "red",
-                        fontStyle: "italic",
-                      }}
-                    >
-                      X
-                    </div>
-                    <div className="label">{product.label}</div>
-                  </div>
-                  <input
-                    className={`p-2 rounded-xl border text-sm w-full`}
-                    type="number"
-                    placeholder="Quantity"
-                    value={productQuantities[product.value] || ""}
-                    onChange={(e) =>
-                      handleQuantityChange(product.value, e.target.value)
-                    }
-                  />
-                </div>
-              ))}
-
             <button
-              onClick={(e) => onButtonClick(e)}
+              onClick={(e) => showModal(e)}
               className="bg-[#002D74] rounded-xl text-white py-3 hover:bg-[#001F56] transition-transform transform hover:scale-105 duration-300 w-full"
             >
-              Download Facture
+              Set The Quantity Of Products{" "}
+              {selectedProducts.length > 0 && `(${selectedProducts.length})`}
             </button>
           </form>
         </div>
       </div>
+      <Modal
+        title="Set Quantity of Products"
+        open={isModalOpen}
+        onOk={(e) => onButtonClick(e)}
+        onCancel={handleCancel}
+      >
+        {selectedProducts.length > 0 &&
+          selectedProducts.map((product, index) => (
+            <div className="row-input-q w-full mb-4" key={index}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div
+                    className="delete cursor-pointer mr-2 text-red-600 italic"
+                    onClick={() =>
+                      setSelectedProducts([
+                        ...selectedProducts.filter(
+                          (item) => item.value !== product.value
+                        ),
+                      ])
+                    }
+                  >
+                    X
+                  </div>
+                  <div className="label mr-4">{product.label}</div>
+                </div>
+                <input
+                  className="p-2 rounded-xl border text-sm w-1/2"
+                  type="number"
+                  placeholder="Quantity"
+                  value={productQuantities[product.value] || ""}
+                  onChange={(e) =>
+                    handleQuantityChange(product.value, e.target.value)
+                  }
+                />
+              </div>
+            </div>
+          ))}
+      </Modal>
     </section>
   );
 };

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Modal } from "antd";
 import "./style.css";
 
 const Devis = () => {
@@ -40,6 +41,42 @@ const Devis = () => {
       navigate("/");
     }
   }, [navigate]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = (e) => {
+    e.preventDefault();
+    if (toUser === "") {
+      setToUserError("To User is required");
+      toast.error("User is required");
+      return;
+    }
+    if (fromUser === "") {
+      setFromUserError("From User is required");
+      toast.error("From User is required");
+      return;
+    }
+    if (selectedProducts.length === 0) {
+      toast.error("Please select at least one product");
+
+      return;
+    }
+
+    if (paymentMethod === "") {
+      setPaymentMethodError("Payment Method is required");
+      toast.error("Payment Method is required");
+      return;
+    }
+    if (giveRemise && Remise === "") {
+      setRemiseError("Remise is required");
+      toast.error("Remise is required");
+      return;
+    }
+
+    setIsModalOpen(true);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   const getFacture = async (id) => {
     try {
@@ -87,34 +124,9 @@ const Devis = () => {
   const onButtonClick = async (e) => {
     e.preventDefault();
     try {
-      if (toUser === "") {
-        setToUserError("To User is required");
-        toast.error("User is required");
-        return;
-      }
-      if (fromUser === "") {
-        setFromUserError("From User is required");
-        toast.error("From User is required");
-        return;
-      }
-      if (selectedProducts.length === 0) {
-        toast.error("Please select at least one product");
-
-        return;
-      }
       if (Object.keys(productQuantities).length === 0) {
         toast.error("Please enter quantity for selected products");
 
-        return;
-      }
-      if (paymentMethod === "") {
-        setPaymentMethodError("Payment Method is required");
-        toast.error("Payment Method is required");
-        return;
-      }
-      if (giveRemise && Remise === "") {
-        setRemiseError("Remise is required");
-        toast.error("Remise is required");
         return;
       }
 
@@ -143,7 +155,7 @@ const Devis = () => {
 
         return;
       } else {
-        toast.success("Bon De Livraison created successfully");
+        toast.success("Devis created successfully");
         setToUser("");
         setFromUser("");
         setSelectedProducts([]);
@@ -152,6 +164,7 @@ const Devis = () => {
         getFacture(response.data._id);
         setPaymentMethod("");
         setRemise("");
+        setIsModalOpen(false);
       }
     } catch (error) {
       console.log(error);
@@ -206,6 +219,7 @@ const Devis = () => {
           <form className="flex flex-col gap-4 w-full">
             <input
               type="text"
+              value={toUser}
               placeholder="User"
               onChange={(e) => {
                 setToUser(e.target.value);
@@ -218,6 +232,7 @@ const Devis = () => {
             <input
               type="text"
               placeholder="From User"
+              value={fromUser}
               onChange={(e) => {
                 setFromUser(e.target.value);
                 setFromUserError("");
@@ -290,51 +305,54 @@ const Devis = () => {
               />
               <label>Timbre Fiscale</label>
             </div>
-            {selectedProducts.length > 0 &&
-              selectedProducts.map((product, index) => (
-                <div className="row-input-q w-full" key={index}>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <div
-                      className="delete"
-                      onClick={() =>
-                        setSelectedProducts([
-                          ...selectedProducts.filter(
-                            (item) => item.value !== product.value
-                          ),
-                        ])
-                      }
-                      style={{
-                        cursor: "pointer",
-                        marginRight: "5px",
-                        color: "red",
-                        fontStyle: "italic",
-                      }}
-                    >
-                      X
-                    </div>
-                    <div className="label">{product.label}</div>
-                  </div>
-                  <input
-                    className={`p-2 rounded-xl border text-sm w-full`}
-                    type="number"
-                    placeholder="Quantity"
-                    value={productQuantities[product.value] || ""}
-                    onChange={(e) =>
-                      handleQuantityChange(product.value, e.target.value)
-                    }
-                  />
-                </div>
-              ))}
-
             <button
-              onClick={(e) => onButtonClick(e)}
+              onClick={(e) => showModal(e)}
               className="bg-[#002D74] rounded-xl text-white py-3 hover:bg-[#001F56] transition-transform transform hover:scale-105 duration-300 w-full"
             >
-              Download Devis
+              Set The Quantity Of Products{" "}
+              {selectedProducts.length > 0 && `(${selectedProducts.length})`}
             </button>
           </form>
         </div>
       </div>
+      <Modal
+        title="Set Quantity of Products"
+        open={isModalOpen}
+        onOk={(e) => onButtonClick(e)}
+        onCancel={handleCancel}
+      >
+        {selectedProducts.length > 0 &&
+          selectedProducts.map((product, index) => (
+            <div className="row-input-q w-full mb-4" key={index}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div
+                    className="delete cursor-pointer mr-2 text-red-600 italic"
+                    onClick={() =>
+                      setSelectedProducts([
+                        ...selectedProducts.filter(
+                          (item) => item.value !== product.value
+                        ),
+                      ])
+                    }
+                  >
+                    X
+                  </div>
+                  <div className="label mr-4">{product.label}</div>
+                </div>
+                <input
+                  className="p-2 rounded-xl border text-sm w-1/2"
+                  type="number"
+                  placeholder="Quantity"
+                  value={productQuantities[product.value] || ""}
+                  onChange={(e) =>
+                    handleQuantityChange(product.value, e.target.value)
+                  }
+                />
+              </div>
+            </div>
+          ))}
+      </Modal>
     </section>
   );
 };
