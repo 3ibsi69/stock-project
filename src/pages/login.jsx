@@ -65,7 +65,7 @@ const Login = (props) => {
         <div className="md:w-1/2 px-12 md:px-20">
           <h2 className="font-bold text-3xl text-[#002D74]">Login</h2>
           <p className="text-sm mt-6 text-[#002D74]">
-            If you already a member, easily login
+            Welcome back ! Please login to your account
           </p>
           <form className="flex flex-col gap-6">
             <input
@@ -104,9 +104,9 @@ const Login = (props) => {
               Login
             </button>
           </form>
-          <div className="mt-7 text-sm border-b border-[#002D74] py-4 text-[#002D74]">
+          {/* <div className="mt-7 text-sm border-b border-[#002D74] py-4 text-[#002D74]">
             <a href="#">Forgot your password?</a>
-          </div>
+          </div> */}
         </div>
 
         <div className="md:block hidden w-1/2">
